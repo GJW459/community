@@ -56,7 +56,6 @@ public class GithubProvider {
                 .build();
         try {
             Response response = client.newCall(request).execute();
-            assert response.body() != null;
             String string = response.body().string();
             GithubUser githubUser = com.alibaba.fastjson.JSON.parseObject(string, GithubUser.class);
             return githubUser;
