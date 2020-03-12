@@ -1,7 +1,7 @@
 /**
- * FileName: User
+ * FileName: Question
  * Author:   郭经伟
- * Date:     2020/3/11 20:37
+ * Date:     2020/3/12 18:37
  * Description:
  * History:
  * <author>          <time>          <version>          <desc>
@@ -10,24 +10,25 @@
 package com.gjw.codecommunity.community.model;
 
 import lombok.Data;
-import lombok.ToString;
 
-@ToString
 @Data
-public class User {
+public class Question {
 
     private Integer id;
 
-    private String name;
+    private String title;
 
-    private String accountId;
+    private String description;
 
-    private String token;
+    private String tag;
 
     private Long gmtCreate;
 
     private Long gmtModified;
 
-    private String avatarUrl;
+    private Integer creator;
+    private Integer viewCount;
+    private Integer commentCount;
+    private Integer likeCount;
 
 }
