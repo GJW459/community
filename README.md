@@ -40,7 +40,7 @@ create table USER
 ## 第一个功能
 实现GitHub的第三方登录<br>
 1. 通过向GitHub获取权限，获取权限后调用GitHub的user接口，
-通过okhttp返回一个json字符串再由fastjson将这个json对象装换成GitHubUser对象这是一个数据传输对象
+通过okhttp返回一个json字符串再由fastjson将这个json字符串装换成GitHubUser对象这是一个数据传输对象
 ，再通过在控制器里面将GitHubUser对象的属性封装到User对象中，最后存入MySql数据库
 2. Cookie和Session对象
 * 首先Cookie不是Servlet中的九大内置对象，需要实列化，session对象是内置对象不需要实列化
