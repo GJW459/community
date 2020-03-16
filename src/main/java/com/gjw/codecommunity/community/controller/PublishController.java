@@ -32,58 +32,44 @@ public class PublishController {
     private QuestionMapper questionMapper;
     @Autowired
     private UserMapper userMapper;
+
     @GetMapping("/publish")
-    public String publish(){
+    public String publish() {
 
         return "publish";
     }
 
     @PostMapping("/publish")
-    public String doPublish(@RequestParam(value = "title",required = false) String title,
-                            @RequestParam(value = "description",required = false) String description,
-                            @RequestParam(value = "tag",required = false) String tag,
+    public String doPublish(@RequestParam(value = "title", required = false) String title,
+                            @RequestParam(value = "description", required = false) String description,
+                            @RequestParam(value = "tag", required = false) String tag,
                             HttpServletRequest request,
-                            Model model){
+                            Model model) {
 
         //如果有些没有填就把它从request域中返回到publish.html
-        model.addAttribute("title",title);
-        model.addAttribute("description",description);
-        model.addAttribute("tag",tag);
-        if (title==null||"".equals(title)){
-            model.addAttribute("error","标题不能为空");
+        model.addAttribute("title", title);
+        model.addAttribute("description", description);
+        model.addAttribute("tag", tag);
+        if (title == null || "".equals(title)) {
+            model.addAttribute("error", "标题不能为空");
             return "publish";
         }
-        if (description==null||"".equals(description)){
-            model.addAttribute("error","问题不能为空");
+        if (description == null || "".equals(description)) {
+            model.addAttribute("error", "问题不能为空");
             return "publish";
         }
-        if (tag==null||"".equals(tag)){
-            model.addAttribute("error","标签不能为空");
+        if (tag == null || "".equals(tag)) {
+            model.addAttribute("error", "标签不能为空");
             return "publish";
         }
-        Cookie[] cookies = request.getCookies();
-        User user=null;
-        for (Cookie cookie : cookies) {
-
-            //key 为token的Cookie
-            if (cookie.getName().equals("token")){
-
-                String token=cookie.getValue();
-                user=userMapper.findByToken(token);
-                if (user!=null){
-                    //向服务端传session对象
-                    request.getSession().setAttribute("user",user);
-                }
-                break;
-            }
-        }
+        User user = (User) request.getSession().getAttribute("user");
         //
-        if (user==null){
-            model.addAttribute("error","用户没有登录");
+        if (user == null) {
+            model.addAttribute("error", "用户没有登录");
             return "publish";
         }
         //发布疑问的时候存储在数据库中
-        Question question=new Question();
+        Question question = new Question();
         question.setTag(tag);
         question.setTitle(title);
         question.setDescription(description);

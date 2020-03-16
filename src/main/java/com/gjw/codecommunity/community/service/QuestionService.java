@@ -62,4 +62,35 @@ public class QuestionService {
         return paginationDTO;
 
     }
+
+    //根据用户查询数据
+    public PaginationDTO list(Integer id, Integer page, Integer size) {
+
+        //先获取offset 好传入sql语句中
+        Integer offset=(page-1)*size;
+        //获取当前页的数据
+        List<Question> questions = questionMapper.listByUserId(id, offset, size);
+        //传过去的问题数据还包含User数据
+        List<QuestionDto> questionDtoList=new ArrayList<>();
+        //paginationDTO这里面包含questionDtoList和分页的一些信息
+        PaginationDTO paginationDTO=new PaginationDTO();
+        for (Question question:questions){
+
+            //通过Id获取用户信息
+            User user=userMapper.findById(question.getCreator());
+            QuestionDto questionDto=new QuestionDto();
+            questionDto.setUser(user);
+            //Spring的工具类
+            BeanUtils.copyProperties(question,questionDto);
+            questionDtoList.add(questionDto);
+        }
+        paginationDTO.setQuestionDtoList(questionDtoList);
+        Integer totalCount=questionMapper.countByUserId(id);
+
+        //调用DTO中设置分页信息的一些属性
+        paginationDTO.setPagination(totalCount,page,size);
+
+        return paginationDTO;
+
+    }
 }

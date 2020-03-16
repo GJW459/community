@@ -32,35 +32,16 @@ public class IndexController {
     private QuestionService questionService;
     @Autowired
     private UserMapper userMapper;
+
     @GetMapping("/")
     public String index(HttpServletRequest request,
                         Model model,
-                        @RequestParam(value = "page",defaultValue = "1") Integer page,
-                        @RequestParam(value = "size",defaultValue = "5") Integer size)
-    {
+                        @RequestParam(value = "page", defaultValue = "1") Integer page,
+                        @RequestParam(value = "size", defaultValue = "5") Integer size) {
 
-        Cookie[] cookies = request.getCookies();
-        //获取所有的Cookie
-        if (cookies!=null){
-            for (Cookie cookie : cookies) {
 
-                //key 为token的Cookie
-                if (cookie.getName().equals("token")){
-
-                    String token=cookie.getValue();
-                    User user=userMapper.findByToken(token);
-                    if (user!=null){
-                        //向服务端传session对象
-                        request.getSession().setAttribute("user",user);
-                    }
-                    break;
-                }
-            }
-        }
-
-        PaginationDTO paginationDTO = questionService.list(page,size);
-        System.out.println(paginationDTO.getQuestionDtoList());
-        model.addAttribute("paginationDTO",paginationDTO);
+        PaginationDTO paginationDTO = questionService.list(page, size);
+        model.addAttribute("paginationDTO", paginationDTO);
         return "index";
     }
 }
