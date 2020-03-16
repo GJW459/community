@@ -9,6 +9,7 @@
  */
 package com.gjw.codecommunity.community.service;
 
+import com.gjw.codecommunity.community.DTO.PaginationDTO;
 import com.gjw.codecommunity.community.DTO.QuestionDto;
 import com.gjw.codecommunity.community.mapper.QuestionMapper;
 import com.gjw.codecommunity.community.mapper.UserMapper;
@@ -30,15 +31,22 @@ public class QuestionService {
     @Autowired
     private QuestionMapper questionMapper;
 
-    public List<QuestionDto> list(){
+    //传入一个page 页数 和 一个 size页面大小
+    public PaginationDTO list(Integer page, Integer size){
 
-        List<Question> list = questionMapper.list();
+
+        //size*(page-1)=offset
+        Integer offset=size*(page-1);
+        //查询当前页的数据
+        List<Question> list = questionMapper.list(offset,size);
         //定义QuestionDao list
         List<QuestionDto> questionDtoList=new ArrayList<>();
+        //实例化PaginationDTO=QuestionDto+分页的一些信息
+        PaginationDTO paginationDTO=new PaginationDTO();
         //遍历list 获取发布问题的User的信息
         for (Question question:list){
 
-            User user = userMapper.findById(question.getId());
+            User user = userMapper.findById(question.getCreator());
             QuestionDto questionDto=new QuestionDto();
             questionDto.setUser(user);
             //通过spring的BeanUtils
@@ -46,8 +54,12 @@ public class QuestionService {
             questionDtoList.add(questionDto);
 
         }
+        paginationDTO.setQuestionDtoList(questionDtoList);
+        Integer totalCount=questionMapper.count();
+        //调用DTO中设置分页信息的一些属性
+        paginationDTO.setPagination(totalCount,page,size);
 
-        return questionDtoList;
+        return paginationDTO;
 
     }
 }
