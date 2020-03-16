@@ -88,7 +88,7 @@ lombok是一个插件：可以简化代码操作，通过注解生成get，set�
 * 确定：不能实现多参构造，只能实现全参和无参，代码可读写差
 * 使用：IDEA下载lombok插件，maven引入lombok依赖
 常见注解
-1. @Data:自动生成所有的getset方法
+1. @Data:自动生成所有的get set方法
 2. @Getter/@Setter:自动生成get/set方法
 3. @NonNull：校验参数，能够防止空指针异常
 4. @Cleanup：自动调用close()方法，关闭流，常用来文件的读写
@@ -98,3 +98,122 @@ lombok是一个插件：可以简化代码操作，通过注解生成get，set�
 ```
 * @ToString：生成 toString()方法
 * @NoArgsConstructor, @RequiredArgsConstructor and @AllArgsConstructor参数（Args）构造器（constructor）
+## 实现分页功能
+* 此分页功能没有基于插件,是自己写逻辑实现
+* 分页步骤
+1. controller控制器接收请求，请求内包含page：页号，size：一页的list question数
+2. controller依赖于service层，通过将page和size传入service层的list方法返回一个实体类：这个List<QuesitonDto> questions 和 User的一些信息，分页的一些信息
+3. service依赖于dao层：调用dao的方法获取List<Question> question
+4. service在通过PaginationDTO 的setPagination方法设置分页信息返回给controller层
+```java
+//导航到首页 需要的属性
+@Data
+public class PaginationDTO {
+
+    //QuestionDto : Question and User
+    private List<QuestionDto> questionDtoList;
+
+    //是否展示前一页
+    private boolean showPrevious;
+    //是否展示第一页
+    private boolean showFirstPage;
+    //是否展示下一页
+    private boolean showNext;
+    //是否展示最后一页
+    private boolean showEndPage;
+    //当前页
+    private Integer currentPage;
+    //页数数组：1,2,3,4,5
+    private List<Integer> pages=new ArrayList<>();
+    //总页数
+    private Integer totalPage;
+
+    public void setPagination(Integer totalCount,Integer page,Integer size){
+
+        this.currentPage=page;
+
+        //计算总共页数
+        Integer totalPage;
+        if (totalCount%size==0){
+            totalPage=totalCount/size;
+        }else {
+            totalPage=totalCount/size+1;
+        }
+        this.totalPage=totalPage;
+
+        if (page<0){
+            page=1;
+        }
+        if (page>totalPage){
+            page=totalPage;
+        }
+
+        //向列表插入页号
+        //推导的逻辑
+        pages.add(page);
+        for (int i=1;i<=3;i++){
+            //如果是第二页后
+            if (page-i>0){
+                //插在头部
+                pages.add(0,page-i);
+            }
+            if (page+i<=totalPage){
+                pages.add(page+i);
+            }
+        }
+        //第一个判断什么时候有上一页
+        if (page==1){
+            showPrevious=false;//不显示
+        }else {
+            showPrevious=true;
+        }
+        //是否展示上一页 没有那个图标
+        if (totalPage==page){
+            showNext=false;
+        }else {
+            showNext=true;
+        }
+
+        //是否展示第一页
+        if (pages.contains(1)){
+
+            //当列表包含1时不展示
+            showFirstPage=false;
+        }else {
+            showFirstPage=true;
+        }
+        //是否展示最后一页
+        if (pages.contains(totalPage)){
+
+            showEndPage=false;
+        }else {
+            showEndPage=true;
+        }
+
+    }
+}
+
+```
+## 实现个人资料发布问题列表
+* 和分页功能相似
+## 拦截器
+* 拦截器：拦截所有的请求，实际上是拦截请求所对应的handler
+* 过滤器：拦截请求 拦截器：拦截handler
+* springboot通过扩展spring mvc的组件功能
+```java
+//扩展springboot 中的spring mvc自动配置类 并且不覆盖自动配置类
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+
+    @Autowired
+    private SessionIntercepter sessionIntercepter;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(sessionIntercepter).addPathPatterns("/**");
+    }
+}
+
+```
+* 扩展类中不能用@EnableWVC注解 使用后会使spring mvc的auto configuration失效
+* 拦截器实现需要实现HandlerInterceptor接口重写三个方法

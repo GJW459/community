@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 //定义拦截器 并且注入spring ioc容器
 @Component
-public class SessionIntercepter implements HandlerInterceptor {
+public class SessionInterceptor implements HandlerInterceptor {
 
     @Autowired
     private UserMapper userMapper;
