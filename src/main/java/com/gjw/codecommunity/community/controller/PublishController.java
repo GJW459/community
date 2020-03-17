@@ -10,18 +10,18 @@
 package com.gjw.codecommunity.community.controller;
 
 
-import com.gjw.codecommunity.community.mapper.QuestionMapper;
+import com.gjw.codecommunity.community.DTO.QuestionDto;
 import com.gjw.codecommunity.community.mapper.UserMapper;
 import com.gjw.codecommunity.community.model.Question;
 import com.gjw.codecommunity.community.model.User;
+import com.gjw.codecommunity.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
@@ -29,9 +29,19 @@ public class PublishController {
 
 
     @Autowired
-    private QuestionMapper questionMapper;
-    @Autowired
-    private UserMapper userMapper;
+    private QuestionService questionService;
+
+    //通过点击编辑跳转到publish.html 并且显示问题的所有信息
+    @GetMapping("/publish/{id}")
+    public String edit(@PathVariable("id") Integer id,
+                       Model model){
+        QuestionDto questionDto = questionService.findById(id);
+        model.addAttribute("title",questionDto.getTitle());
+        model.addAttribute("description",questionDto.getDescription());
+        model.addAttribute("tag",questionDto.getTag());
+        model.addAttribute("id",questionDto.getId());
+        return "publish";
+    }
 
     @GetMapping("/publish")
     public String publish() {
@@ -43,6 +53,7 @@ public class PublishController {
     public String doPublish(@RequestParam(value = "title", required = false) String title,
                             @RequestParam(value = "description", required = false) String description,
                             @RequestParam(value = "tag", required = false) String tag,
+                            @RequestParam(value = "id",required = false) Integer id,
                             HttpServletRequest request,
                             Model model) {
 
@@ -63,20 +74,19 @@ public class PublishController {
             return "publish";
         }
         User user = (User) request.getSession().getAttribute("user");
-        //
         if (user == null) {
             model.addAttribute("error", "用户没有登录");
             return "publish";
         }
-        //发布疑问的时候存储在数据库中
+        //发布疑问的时候存储在数据库中或者更新
         Question question = new Question();
+        question.setId(id);
         question.setTag(tag);
         question.setTitle(title);
         question.setDescription(description);
         question.setCreator(user.getId());
-        question.setGmtCreate(System.currentTimeMillis());
-        question.setGmtModified(question.getGmtCreate());
-        questionMapper.create(question);
+        //判断是create还是update
+        questionService.createorupdate(question);
         //重新定向到首页
         return "redirect:/";
 

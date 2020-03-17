@@ -101,4 +101,18 @@ public class QuestionService {
         questionDto.setUser(user);
         return questionDto;
     }
+
+    public void createorupdate(Question question) {
+
+        if (question.getId()==null){
+            //id为空的话 那就是create
+            question.setGmtCreate(System.currentTimeMillis());
+            question.setGmtModified(question.getGmtCreate());
+            questionMapper.create(question);
+        }else {
+            //update
+            question.setGmtModified(System.currentTimeMillis());
+            questionMapper.update(question);
+        }
+    }
 }

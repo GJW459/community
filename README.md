@@ -217,3 +217,37 @@ public class WebConfig implements WebMvcConfigurer {
 ```
 * 扩展类中不能用@EnableWVC注解 使用后会使spring mvc的auto configuration失效
 * 拦截器实现需要实现HandlerInterceptor接口重写三个方法
+## 实现问题详情功能
+1. 通过点击首页的问题列表的title跳转到个人问题详情页面
+2. 返回给页面一个QuestionDto：Question + User 来渲染页面
+3. 左边显示问题的信息 title description 创建时间 修改时间 浏览次数 作者 右边显示发起人的头像和name
+4. 然后添加一个编辑链接，当session域中的user存在且user.id==QuestionDto.creator时才显示这个编辑链接
+## 修复登录功能
+* 之前每次登录都要向数据库插入数据，所有会出现很多相同的用户
+* 解决：先判断，通过accountId查询User，如果user不存在就插入数据库，如果user存在就更新User的信息，因为每次的token都不同所有需要更新token字段
+## 实现注销功能
+* remove session中的user
+* 普通的来说只需要remove user就行了，但是我们这里设置了一个拦截器，所有请求都被拦截，拦截后先获取request域(客户端)中的所有Cookie，再遍历Cookie获取服务端响应给客户端的Token Cookie，然后在根据Token查询数据库中的User对象，往session域中再添加一个User，所以这里必须同时销毁Cookie
+* 消除Token为key的Cookie的方法
+```java
+@Controller
+public class AuthorizeController {
+
+    //退出登录
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response) {
+        //删除session和cookie
+        request.getSession().removeAttribute("user");
+        //删除cookie只需要覆盖就行了
+        Cookie cookie = new Cookie("token", null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
+    }
+}
+```
+## 实现编辑功能
+1. 先点击编辑链接，然后被对应的handler所处理返回给publish.html当前编辑问题的所有信息，包括id
+2. 在publish.html中添加一个类型为hidden的 input标签 
+3. 通过提交form表单进行doPublish，判断是create 还是 update 如果提交的id不为空，就update，反之insert
