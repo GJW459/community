@@ -11,6 +11,8 @@ package com.gjw.codecommunity.community.service;
 
 import com.gjw.codecommunity.community.DTO.PaginationDTO;
 import com.gjw.codecommunity.community.DTO.QuestionDto;
+import com.gjw.codecommunity.community.Exception.CustomizeErrorCode;
+import com.gjw.codecommunity.community.Exception.CustomizeException;
 import com.gjw.codecommunity.community.mapper.QuestionMapper;
 import com.gjw.codecommunity.community.mapper.UserMapper;
 import com.gjw.codecommunity.community.model.Question;
@@ -95,6 +97,11 @@ public class QuestionService {
     }
     public QuestionDto findById(Integer id) {
         Question question=questionMapper.findById(id);
+        //这里question可能没有找到Question 空指针异常
+        if (question==null){
+            //抛出异常 给异常处理类处理
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         User user=userMapper.findById(question.getCreator());
         QuestionDto questionDto=new QuestionDto();
         BeanUtils.copyProperties(question,questionDto);
@@ -111,8 +118,13 @@ public class QuestionService {
             questionMapper.create(question);
         }else {
             //update
+            //在更新的时候也能出错
             question.setGmtModified(System.currentTimeMillis());
-            questionMapper.update(question);
+            Integer update = questionMapper.update(question);
+            //update 为0的话 证明在其他操作的时候已经删除了问题 所有要抛出问题没有找到的异常
+            if (update!=1){
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }
     }
 }
