@@ -26,6 +26,8 @@ public class QuestionController {
     @GetMapping("/question/{id}")
     public String question(@PathVariable("id") Integer id,
                            Model model) {
+        //每次点击问题详情页面时，阅读量都会增加1
+        questionService.incView(id);
         //通过指定id获取QuestionDTO
         QuestionDto question =questionService.findById(id);
         model.addAttribute("question",question);
