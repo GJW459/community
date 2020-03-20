@@ -10,7 +10,9 @@
 package com.gjw.codecommunity.community.Exception;
 
 //接口
+//两个方法：获取消息和获取状态码
 public interface ICustomizeErrorCode {
 
     String getMessage();
+    Integer getCode();
 }
