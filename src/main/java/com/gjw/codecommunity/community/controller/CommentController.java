@@ -10,8 +10,10 @@
 package com.gjw.codecommunity.community.controller;
 
 import com.gjw.codecommunity.community.DTO.CommentCreateDTO;
+import com.gjw.codecommunity.community.DTO.CommentDTO;
 import com.gjw.codecommunity.community.DTO.ResultDTO;
 import com.gjw.codecommunity.community.Exception.CustomizeErrorCode;
+import com.gjw.codecommunity.community.enums.CommentTypeEnum;
 import com.gjw.codecommunity.community.model.Comment;
 import com.gjw.codecommunity.community.model.User;
 import com.gjw.codecommunity.community.service.CommentService;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 public class CommentController {
@@ -29,36 +32,34 @@ public class CommentController {
 
     /**
      * 实现回复功能：通过ajax异步提交json 再序列化为Object对象
-     * @param commentCreateDTO
-     * 1.判断有没有登录，没有登录就不能回复，抛出异常
-     * 2.判断回复是否为空，为空就不能回复，抛出异常
-     * 3.前台传过来的回复数据通过调用service层的insert方法向数据库插入回复数据
-     * 4.向前台返回一个ResultDto
-     * 可能需要要处理的异常
-     * 1.没有登录=>异常
-     * 2.回复为空=>异常
-     * 3.异常都在service层抛出
+     *
+     * @param commentCreateDTO 1.判断有没有登录，没有登录就不能回复，抛出异常
+     *                         2.判断回复是否为空，为空就不能回复，抛出异常
+     *                         3.前台传过来的回复数据通过调用service层的insert方法向数据库插入回复数据
+     *                         4.向前台返回一个ResultDto
+     *                         可能需要要处理的异常
+     *                         1.没有登录=>异常
+     *                         2.回复为空=>异常
+     *                         3.异常都在service层抛出
      * @return
      */
     @ResponseBody
     @PostMapping(value = "/comment")
     public Object post(@RequestBody CommentCreateDTO commentCreateDTO,
-                       HttpServletRequest request){
+                       HttpServletRequest request) {
 
-//        User user=new User();
-//        user.setId(12);
         //先判断当前是否登录如果没有登录的话就不可以回复
-        User user=(User)request.getSession().getAttribute("user");
-        if (user==null){
+        User user = (User) request.getSession().getAttribute("user");
+        if (user == null) {
             //返回给前台一个message为没有登录不能回复的ResultDto
             return ResultDTO.errorof(CustomizeErrorCode.NOT_LOGIN);
         }
         //如果回复传输的数据为空或者内容为空的话抛出异常
-        if (commentCreateDTO ==null|| "".equals(commentCreateDTO.getContent())){
+        if (commentCreateDTO == null || "".equals(commentCreateDTO.getContent())) {
             //返回给前台一个message为回复为空的ResultDTO
             return ResultDTO.errorof(CustomizeErrorCode.COMMENT_IS_EMPTY);
         }
-        Comment comment=new Comment();
+        Comment comment = new Comment();
         comment.setParentId(commentCreateDTO.getParentId());
         comment.setContent(commentCreateDTO.getContent());
         comment.setType(commentCreateDTO.getType());
@@ -69,9 +70,17 @@ public class CommentController {
         commentService.insert(comment);
         return ResultDTO.okof();
 
+    }
+    //向前台返回JSON数据
 
-
-
-
+    /**
+     * @param id  这个id是被评论人的id
+     * @return 返回的是一个ResultDTO
+     */
+    @ResponseBody
+    @GetMapping(value = "/comment/{id}")
+    public Object get(@PathVariable("id") Integer id){
+        List<CommentDTO> commentDTOS  = commentService.findByParentId(id, CommentTypeEnum.COMMENT);
+        return ResultDTO.okof(commentDTOS);
     }
 }

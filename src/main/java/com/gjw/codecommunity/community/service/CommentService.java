@@ -48,7 +48,7 @@ public class CommentService {
         }
         if (comment.getType()==CommentTypeEnum.COMMENT.getType()){
             //回复评论
-            Comment dbComment=commentMapper.selectById(comment.getId());
+            Comment dbComment=commentMapper.selectById(comment.getParentId());
             if (dbComment==null){
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
             }
@@ -67,10 +67,10 @@ public class CommentService {
     }
 
     //获取
-    public List<CommentDTO> findByParentId(Integer parentId) {
+    public List<CommentDTO> findByParentId(Integer parentId,CommentTypeEnum commentTypeEnum) {
 
         //查询
-        List<Comment> comments=commentMapper.findByParentId(parentId);
+        List<Comment> comments=commentMapper.findByParentId(parentId,commentTypeEnum.getType());
         if (comments.size()==0){
             return new ArrayList<>();
         }

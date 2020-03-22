@@ -11,6 +11,7 @@ package com.gjw.codecommunity.community.controller;
 
 import com.gjw.codecommunity.community.DTO.CommentDTO;
 import com.gjw.codecommunity.community.DTO.QuestionDto;
+import com.gjw.codecommunity.community.enums.CommentTypeEnum;
 import com.gjw.codecommunity.community.service.CommentService;
 import com.gjw.codecommunity.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +38,7 @@ public class QuestionController {
         //通过指定id获取QuestionDTO
         QuestionDto question =questionService.findById(id);
         //获取List<CommentDto>
-        List<CommentDTO> comments=commentService.findByParentId(id);
+        List<CommentDTO> comments=commentService.findByParentId(id, CommentTypeEnum.QUESTION);
         model.addAttribute("question",question);
         model.addAttribute("comments",comments);
         return "question";
