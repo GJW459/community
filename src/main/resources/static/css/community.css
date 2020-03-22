@@ -47,3 +47,27 @@ body{
     margin-bottom: 10px;
     float: right;
 }
+.quesiton-content{
+    margin-top: 25px;
+}
+.comment-sp{
+    margin-top: 0;
+}
+
+.menu{
+    color: #999;
+    margin-top: 5px;
+}
+.menu .icon{
+    margin-right: 6px;
+    font-size: 15px;
+    cursor: pointer;
+}
+.menu .icon:hover{
+    color: #499ef3;
+}
+.comments {
+    padding-bottom: 5px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+}

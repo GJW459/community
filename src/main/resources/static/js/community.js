@@ -1,7 +1,14 @@
+/**
+ * 提交回复
+ */
 function post() {
     //获取input_hidden中的值
     var parentId = $('#question_input').val();
     var content = $('#textarea_input').val();
+    if (!content){
+        alert("请输入回复内容");
+        return;
+    }
     $.ajax({
         type: "post",
         url: "/comment",
@@ -14,7 +21,7 @@ function post() {
         success: function (response) {
             console.log(response);
             if (response.code==200){
-                $('#section_div').hide();
+                window.location.reload();
             }else {
                 if (response.code==2002) {
                     //当没有登录时,实现不刷新页面登录
@@ -36,5 +43,12 @@ function post() {
     console.log(parentId);
     console.log(content);
 
+
+}
+
+/**
+ * 展开二级评论
+ */
+function collapseComments() {
 
 }

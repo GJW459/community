@@ -16,6 +16,8 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 @Mapper
 public interface CommentMapper {
@@ -24,6 +26,9 @@ public interface CommentMapper {
     void insert(Comment comment);
 
 
-    @Select("select * from comment where parent_id=#{parentId}")
-    Comment selectByParentId(@Param("parentId") Integer parentId);
+    @Select("select * from comment where id=#{id}")
+    Comment selectById(@Param("id") Integer id);
+
+    @Select("select * from comment where parent_id=#{parenId} ORDER BY gmt_create desc")
+    List<Comment> findByParentId(@Param("parenId") Integer parenId);
 }

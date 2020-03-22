@@ -9,10 +9,9 @@
  */
 package com.gjw.codecommunity.community.controller;
 
-import com.gjw.codecommunity.community.DTO.CommentDTO;
+import com.gjw.codecommunity.community.DTO.CommentCreateDTO;
 import com.gjw.codecommunity.community.DTO.ResultDTO;
 import com.gjw.codecommunity.community.Exception.CustomizeErrorCode;
-import com.gjw.codecommunity.community.Exception.CustomizeException;
 import com.gjw.codecommunity.community.model.Comment;
 import com.gjw.codecommunity.community.model.User;
 import com.gjw.codecommunity.community.service.CommentService;
@@ -30,7 +29,7 @@ public class CommentController {
 
     /**
      * 实现回复功能：通过ajax异步提交json 再序列化为Object对象
-     * @param commentDTO
+     * @param commentCreateDTO
      * 1.判断有没有登录，没有登录就不能回复，抛出异常
      * 2.判断回复是否为空，为空就不能回复，抛出异常
      * 3.前台传过来的回复数据通过调用service层的insert方法向数据库插入回复数据
@@ -43,7 +42,7 @@ public class CommentController {
      */
     @ResponseBody
     @PostMapping(value = "/comment")
-    public Object post(@RequestBody CommentDTO commentDTO,
+    public Object post(@RequestBody CommentCreateDTO commentCreateDTO,
                        HttpServletRequest request){
 
 //        User user=new User();
@@ -55,14 +54,14 @@ public class CommentController {
             return ResultDTO.errorof(CustomizeErrorCode.NOT_LOGIN);
         }
         //如果回复传输的数据为空或者内容为空的话抛出异常
-        if (commentDTO==null|| "".equals(commentDTO.getContent())){
+        if (commentCreateDTO ==null|| "".equals(commentCreateDTO.getContent())){
             //返回给前台一个message为回复为空的ResultDTO
             return ResultDTO.errorof(CustomizeErrorCode.COMMENT_IS_EMPTY);
         }
         Comment comment=new Comment();
-        comment.setParentId(commentDTO.getParentId());
-        comment.setContent(commentDTO.getContent());
-        comment.setType(commentDTO.getType());
+        comment.setParentId(commentCreateDTO.getParentId());
+        comment.setContent(commentCreateDTO.getContent());
+        comment.setType(commentCreateDTO.getType());
         comment.setGmtCreate(System.currentTimeMillis());
         comment.setGmtModified(comment.getGmtCreate());
         comment.setCommentator(user.getId());
