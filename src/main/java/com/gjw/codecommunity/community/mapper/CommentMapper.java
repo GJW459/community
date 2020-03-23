@@ -10,10 +10,7 @@
 package com.gjw.codecommunity.community.mapper;
 
 import com.gjw.codecommunity.community.model.Comment;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -31,4 +28,7 @@ public interface CommentMapper {
 
     @Select("select * from comment where parent_id=#{parenId} and type=#{type} ORDER BY gmt_create desc")
     List<Comment> findByParentId(@Param("parenId") Integer parenId,@Param("type") Integer type);
+
+    @Update("update comment set comment_count=#{commentCount}+1 where id=#{id} ")
+    void incComment(Comment comment);
 }

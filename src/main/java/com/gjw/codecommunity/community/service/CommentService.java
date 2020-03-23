@@ -48,11 +48,13 @@ public class CommentService {
         }
         if (comment.getType()==CommentTypeEnum.COMMENT.getType()){
             //回复评论
+            //查询是否有一级标题
             Comment dbComment=commentMapper.selectById(comment.getParentId());
             if (dbComment==null){
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
             }
             commentMapper.insert(comment);
+            commentMapper.incComment(dbComment);
         }else {
             //回复问题
             Question question=questionMapper.findById(comment.getParentId());
