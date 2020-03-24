@@ -8,7 +8,7 @@
 ## 工具
 git<br>
 git init:创建仓库<br>
-git status:查看可以提交的文件<br>
+git type:查看可以提交的文件<br>
 git add .全部加到缓存库里<br>
 git commit -m "提交"<br>
 git remote origin 和远程连接<br>

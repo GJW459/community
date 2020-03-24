@@ -57,7 +57,7 @@ public class QuestionService {
             questionDtoList.add(questionDto);
 
         }
-        paginationDTO.setQuestionDtoList(questionDtoList);
+        paginationDTO.setData(questionDtoList);
         Integer totalCount = questionMapper.count();
         //调用DTO中设置分页信息的一些属性
         paginationDTO.setPagination(totalCount, page, size);
@@ -87,7 +87,7 @@ public class QuestionService {
             BeanUtils.copyProperties(question, questionDto);
             questionDtoList.add(questionDto);
         }
-        paginationDTO.setQuestionDtoList(questionDtoList);
+        paginationDTO.setData(questionDtoList);
         Integer totalCount = questionMapper.countByUserId(id);
 
         //调用DTO中设置分页信息的一些属性

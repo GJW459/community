@@ -17,10 +17,10 @@ import java.util.List;
 
 //导航到首页 需要的属性
 @Data
-public class PaginationDTO {
+public class PaginationDTO <T>{
 
     //QuestionDto : Question and User
-    private List<QuestionDto> questionDtoList;
+    private List<T> data;
 
     //是否展示前一页
     private boolean showPrevious;

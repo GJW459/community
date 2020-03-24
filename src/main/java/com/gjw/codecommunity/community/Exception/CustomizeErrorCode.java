@@ -13,7 +13,10 @@ public enum CustomizeErrorCode implements ICustomizeErrorCode {
     TARGET_PARAM_NOT_FOUND(2004,"没有选中就评论"),
     SYS_ERROR(2005,"系统错误"),
     TYPE_PARAM_WRONG(2006,"评论类型不存在"),
-    COMMENT_NOT_FOUND(2007,"回复的评论不存在");
+    COMMENT_NOT_FOUND(2007,"回复的评论不存在"),
+    NOTIFICATION_NOT_FOUND(2008,"通知没有找到"),
+    READ_NOTIFICATION_FAIL(2009,"读取通知失败");
+
     private String message;
     private Integer code;
     @Override
