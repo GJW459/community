@@ -9,6 +9,9 @@
  */
 package com.gjw.codecommunity.community.interception;
 
+import com.gjw.codecommunity.community.enums.NotificationStatusEnum;
+import com.gjw.codecommunity.community.enums.NotificationTypeEnum;
+import com.gjw.codecommunity.community.mapper.NotificationMapper;
 import com.gjw.codecommunity.community.mapper.UserMapper;
 import com.gjw.codecommunity.community.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +29,8 @@ public class SessionInterceptor implements HandlerInterceptor {
 
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private NotificationMapper notificationMapper;
 
     // 拦截所有请求
     @Override
@@ -43,6 +48,8 @@ public class SessionInterceptor implements HandlerInterceptor {
                     if (user != null) {
                         //向服务端传session对象
                         request.getSession().setAttribute("user", user);
+                        Integer unreadCount = notificationMapper.countByUserId(user.getId(), NotificationStatusEnum.UNREAD.getStatus());
+                        request.getSession().setAttribute("unreadCount",unreadCount);
                     }
                     break;
                 }
