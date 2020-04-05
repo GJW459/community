@@ -12,9 +12,11 @@ package com.gjw.codecommunity.community.model;
 import lombok.Data;
 import lombok.ToString;
 
+import java.io.Serializable;
+
 @ToString
 @Data
-public class User {
+public class User implements Serializable {
 
     private Integer id;
 

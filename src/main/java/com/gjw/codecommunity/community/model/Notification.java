@@ -11,8 +11,10 @@ package com.gjw.codecommunity.community.model;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 @Data
-public class Notification {
+public class Notification implements Serializable {
 
     private Integer id;
     //评论人

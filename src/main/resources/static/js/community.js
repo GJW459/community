@@ -33,7 +33,7 @@ function comment2target(targetId, type, content) {
                     //当没有登录时,实现不刷新页面登录
                     var isAccepted = window.confirm(response.message);
                     if (isAccepted) {
-                        window.open("https://github.com/login/oauth/authorize?client_id=bedef8cad503139674a5&redirect_uri=http://localhost:8087/callback&scope=user&state=1");
+                        window.open("https://github.com/login/oauth/authorize?client_id=bedef8cad503139674a5&redirect_uri=http://129.211.64.121:8087/callback&scope=user&state=1");
                         //通过localStorage
                         window.localStorage.setItem("closeable", "true");
                     }

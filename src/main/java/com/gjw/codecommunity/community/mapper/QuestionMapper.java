@@ -16,10 +16,10 @@ import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
 import java.util.List;
 
-@Repository
-@Mapper
+@CacheNamespace(flushInterval = 60000,size = 512)
 public interface QuestionMapper {
 
+    @Options(useGeneratedKeys = true,keyProperty = "id")
     @Insert("insert into question (title,description,gmt_create,gmt_modified,creator,tag) values(#{title},#{description},#{gmtCreate},#{gmtModified},#{creator},#{tag})")
     void create(Question question);
 
@@ -49,4 +49,9 @@ public interface QuestionMapper {
 
     @Select("select * from question where tag regexp #{regexp} and id!=#{id}")
     List<Question> selectRelated(@Param("regexp") String regexp,@Param("id") Integer id);
+    @Select("select * from question where title COLLATE utf8_general_ci like concat('%',#{search},'%') order by gmt_create desc limit #{offset},#{size}")
+    List<Question> selectBySearch(@Param("search") String search,@Param("offset") Integer offset,@Param("size") Integer size);
+
+    @Select("select tag from question")
+    List<String> getTags();
 }

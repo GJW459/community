@@ -2,6 +2,10 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
     <title>发布-- 码匠社区</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
@@ -15,6 +19,20 @@
     <script type="text/javascript">
         $(function() {
             var editor = editormd("question-editor", {
+
+                theme: "dark",//工具栏主题
+                previewTheme: "dark",//预览主题
+                editorTheme: "pastel-on-dark",//编辑主题
+                saveHTMLToTextarea: true,
+                emoji: false,
+                taskList: true,
+                tocm: true,         // Using [TOCM]
+                tex: true,                   // 开启科学公式TeX语言支持，默认关闭
+                flowChart: true,             // 开启流程图支持，默认关闭
+                sequenceDiagram: true,       // 开启时序/序列图支持，默认关闭,
+                toolbarIcons : function() {  //自定义工具栏，后面有详细介绍
+                    return editormd.toolbarModes['simple']; // full, simple, mini
+                },
                 width  : "100%",
                 height : 500,
                 path   : "/js/lib/",
@@ -95,5 +113,6 @@
 
     </div>
 </div>
+<div th:insert="~{footer :: footer}"></div>
 </body>
 </html>

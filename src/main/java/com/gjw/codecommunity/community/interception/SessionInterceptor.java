@@ -41,7 +41,7 @@ public class SessionInterceptor implements HandlerInterceptor {
             for (Cookie cookie : cookies) {
 
                 //key 为token的Cookie
-                if (cookie.getName().equals("token")) {
+                if ("token".equals(cookie.getName())) {
 
                     String token = cookie.getValue();
                     User user = userMapper.findByToken(token);

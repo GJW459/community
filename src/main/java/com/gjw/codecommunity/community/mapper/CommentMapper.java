@@ -15,13 +15,12 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-@Mapper
+@CacheNamespace(flushInterval = 60000,size = 512)
 public interface CommentMapper {
 
+    @Options(useGeneratedKeys = true,keyProperty = "id")
     @Insert("insert into comment (parent_id,type,commentator,gmt_create,gmt_modified,like_count,content) values(#{parentId},#{type},#{commentator},#{gmtCreate},#{gmtModified},#{likeCount},#{content})")
     void insert(Comment comment);
-
 
     @Select("select * from comment where id=#{id}")
     Comment selectById(@Param("id") Integer id);

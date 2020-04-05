@@ -14,10 +14,10 @@ import com.gjw.codecommunity.community.model.User;
 import org.apache.ibatis.annotations.*;
 import org.springframework.stereotype.Repository;
 
-@Repository
-@Mapper
+@CacheNamespace(flushInterval = 60000,size = 512)
 public interface UserMapper {
 
+    @Options(useGeneratedKeys = true,keyProperty = "id")
     @Insert("insert into user (name,account_id,token,gmt_create,gmt_modified,avatar_url) values(#{name},#{accountId},#{token},#{gmtCreate},#{gmtModified},#{avatarUrl})")
     void insert(User user);
     @Select("select * from user where token=#{token}")

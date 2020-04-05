@@ -15,13 +15,13 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-@Repository
-@Mapper
+@CacheNamespace(flushInterval = 60000,size = 512)
 public interface NotificationMapper {
+    @Options(useGeneratedKeys = true,keyProperty = "id")
     @Insert("insert into notification (notifier,receiver,outer_id,type,gmt_create,status,notifier_name,outer_title) values (#{notifier},#{receiver},#{outerId},#{type},#{gmtCreate},#{status},#{notifierName},#{outerTitle})")
     void insert(Notification notification);
 
-    @Select("select * from notification where receiver=#{receiver} limit #{offset},#{size}")
+    @Select("select * from notification where receiver=#{receiver} order by gmt_create desc limit #{offset},#{size}")
     List<Notification> listByUserId(@Param("receiver") Integer id,@Param("offset") Integer offset,@Param("size") Integer size);
 
     @Select("select count(1) from notification where receiver=#{id} and status=#{status}")

@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
+    <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
     <meta charset="UTF-8">
     <title>碎片</title>
 </head>
@@ -12,16 +16,15 @@
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                         data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">码匠社区</span>
+                    <span class="sr-only">阿伟社区</span>
                 </button>
-                <a class="navbar-brand" href="/">码匠社区</a>
+                <a class="navbar-brand" href="/">阿伟社区</a>
             </div>
-
             <!-- Collect the nav links, forms, and other content for toggling -->
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <form class="navbar-form navbar-left">
+                <form class="navbar-form navbar-left" action="/" method="get">
                     <div class="form-group">
-                        <input type="text" class="form-control" placeholder="搜索问题">
+                        <input type="text" name="search" th:value="${search}" class="form-control" placeholder="搜索问题">
                     </div>
                     <button type="submit" class="btn btn-default">搜索</button>
                 </form>
@@ -41,7 +44,7 @@
                         </ul>
                     </li>
                     <li th:if="${session.user == null}"><a
-                            href="https://github.com/login/oauth/authorize?client_id=bedef8cad503139674a5&redirect_uri=http://localhost:8087/callback&scope=user&state=1">登录</a>
+                            href="https://github.com/login/oauth/authorize?client_id=bedef8cad503139674a5&redirect_uri=http://129.211.64.121:8087/callback&scope=user&state=1">登录</a>
                     </li>
                 </ul>
             </div>

@@ -1,5 +1,15 @@
 ## 码匠社区
-
+## 部署
+- yum update
+- yum install git
+- mkdir App
+- cd App
+- git clone https://github.com/GJW459/community.git
+- yum install maven
+- mvn -v
+- mvn compile package
+- vim 编辑
+ 
 ## 资料
 [Spring文档](https://spring.io/guides)<br>
 [Spring web](https://spring.io/guides/gs/serving-web-content/)<br>

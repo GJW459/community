@@ -2,11 +2,16 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="format-detection" content="telephone=no">
     <title th:text="${question.title}"></title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/community.css">
     <link rel="stylesheet" href="/css/editormd.preview.css" />
+    <link rel="shortcut icon" href="https://pandao.github.io/editor.md/favicon.ico" type="image/x-icon" />
     <!--需要在前面-->
     <script src="/js/jquery-3.4.1.min.js"></script>
     <script src="/js/moment.js"></script>
@@ -15,10 +20,21 @@
     <script src="/js/editormd.min.js"></script>
     <script src="/js/lib/marked.min.js"></script>
     <script src="/js/lib/prettify.min.js"></script>
+    <script src="/js/lib/raphael.min.js"></script>
+    <script src="/js/lib/underscore.min.js"></script>
+    <script src="/js/lib/sequence-diagram.min.js"></script>
+    <script src="/js/lib/flowchart.min.js"></script>
+    <script src="/js/lib/jquery.flowchart.min.js"></script>
     <script src="/js/community.js" type="application/javascript"></script>
     <script type="text/javascript">
         $(function() {
             var testView = editormd.markdownToHTML("question-view", {
+                htmlDecode      : "style,script,iframe",  // you can filter tags decode
+                emoji           : true,
+                taskList        : true,
+                tex             : true,  // 默认不解析
+                flowChart       : true,  // 默认不解析
+                sequenceDiagram : true // 默认不解析
             });
         });
     </script>
@@ -107,12 +123,12 @@
                     <div class="media-left">
                         <a href="#">
                             <img class="media-object img-circle"
-                                 th:src="${question.user.getAvatarUrl()}">
+                                 th:src="${session.user!=null ? session.user.avatarUrl:'/images/default-avatar.png'}">
                         </a>
                     </div>
                     <div class="media-body">
                         <h4 class="media-heading">
-                            <span th:text="${question.user.name}"></span>
+                            <span th:text="${session.user!=null?session.user.name:'匿名用户'}"></span>
                         </h4>
                     </div>
                 </div>
@@ -123,7 +139,7 @@
         </div>
         <div class="col-lg-3 col-md-12 col-sm-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <h5>发起人</h5>
+                <h3 style="margin: 15px auto">发起人</h3>
                 <div class="media">
                     <div class="media-left">
                         <a href="#">
@@ -140,7 +156,9 @@
             </div>
             <hr class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-                <h4>相关问题</h4>
+                <h3>站长微信</h3>
+                <img class="img-thumbnail quesiton-wechat" src="/images/user.PNG">
+                <h3>相关问题</h3>
                 <ul class="question-related">
                     <li th:each="relatedQuestion:${relatedQuestions}">
                         <a th:href="@{'/question/'+${relatedQuestion.id}}" th:text="${relatedQuestion.title}"></a>
@@ -150,5 +168,6 @@
         </div>
     </div>
 </div>
+<div th:insert="~{footer :: footer}"></div>
 </body>
 </html>

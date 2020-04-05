@@ -17,13 +17,16 @@ import com.gjw.codecommunity.community.mapper.QuestionMapper;
 import com.gjw.codecommunity.community.mapper.UserMapper;
 import com.gjw.codecommunity.community.model.Question;
 import com.gjw.codecommunity.community.model.User;
+import com.gjw.codecommunity.community.utils.ListUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class QuestionService {
@@ -35,29 +38,19 @@ public class QuestionService {
     private QuestionMapper questionMapper;
 
     //传入一个page 页数 和 一个 size页面大小
-    public PaginationDTO list(Integer page, Integer size) {
+    public PaginationDTO list(String search, Integer page, Integer size) {
 
 
         //size*(page-1)=offset
         Integer offset = size * (page - 1);
         //查询当前页的数据
-        List<Question> list = questionMapper.list(offset, size);
-        //定义QuestionDao list
-        List<QuestionDto> questionDtoList = new ArrayList<>();
-        //实例化PaginationDTO=QuestionDto+分页的一些信息
-        PaginationDTO paginationDTO = new PaginationDTO();
-        //遍历list 获取发布问题的User的信息
-        for (Question question : list) {
-
-            User user = userMapper.findById(question.getCreator());
-            QuestionDto questionDto = new QuestionDto();
-            questionDto.setUser(user);
-            //通过spring的BeanUtils
-            BeanUtils.copyProperties(question, questionDto);
-            questionDtoList.add(questionDto);
-
+        List<Question> list;
+        if (StringUtils.isBlank(search)){
+            list=questionMapper.list(offset,size);
+        }else {
+            list=questionMapper.selectBySearch(search,offset,size);
         }
-        paginationDTO.setData(questionDtoList);
+        PaginationDTO paginationDTO = ListUtil.setQuestionDtoList(userMapper, list);
         Integer totalCount = questionMapper.count();
         //调用DTO中设置分页信息的一些属性
         paginationDTO.setPagination(totalCount, page, size);
@@ -73,21 +66,7 @@ public class QuestionService {
         Integer offset = (page - 1) * size;
         //获取当前页的数据
         List<Question> questions = questionMapper.listByUserId(id, offset, size);
-        //传过去的问题数据还包含User数据
-        List<QuestionDto> questionDtoList = new ArrayList<>();
-        //paginationDTO这里面包含questionDtoList和分页的一些信息
-        PaginationDTO paginationDTO = new PaginationDTO();
-        for (Question question : questions) {
-
-            //通过Id获取用户信息
-            User user = userMapper.findById(question.getCreator());
-            QuestionDto questionDto = new QuestionDto();
-            questionDto.setUser(user);
-            //Spring的工具类
-            BeanUtils.copyProperties(question, questionDto);
-            questionDtoList.add(questionDto);
-        }
-        paginationDTO.setData(questionDtoList);
+        PaginationDTO paginationDTO = ListUtil.setQuestionDtoList(userMapper, questions);
         Integer totalCount = questionMapper.countByUserId(id);
 
         //调用DTO中设置分页信息的一些属性
@@ -163,5 +142,21 @@ public class QuestionService {
             questionDtos.add(questionDto);
         }
         return questionDtos;
+    }
+
+    //热门标签
+    public Set<String> getHotTags(){
+        List<String> tags = questionMapper.getTags();
+        if (tags==null&&tags.size()==0){
+            return null;
+        }
+        String tag = StringUtils.join(tags, ",");
+        String[] hottags = tag.split(",");
+        Set<String> tagSet=new HashSet<>();
+        for (String hottag : hottags) {
+            tagSet.add(hottag);
+        }
+        return tagSet;
+
     }
 }
