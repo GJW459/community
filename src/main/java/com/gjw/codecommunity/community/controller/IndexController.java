@@ -16,6 +16,7 @@ import com.gjw.codecommunity.community.model.User;
 import com.gjw.codecommunity.community.service.QuestionService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,20 +33,22 @@ public class IndexController {
     //注入Service
     @Autowired
     private QuestionService questionService;
+    @Value("${loginUrl}")
+    private String loginUrl;
 
 
     @GetMapping("/")
     public String index(Model model,
-            @RequestParam(value = "page", defaultValue = "1") Integer page,
-            @RequestParam(value = "size", defaultValue = "5") Integer size,
-            @RequestParam(value = "search", required = false,defaultValue = "") String search) {
-
-
+                        @RequestParam(value = "page", defaultValue = "1") Integer page,
+                        @RequestParam(value = "size", defaultValue = "5") Integer size,
+                        @RequestParam(value = "search", required = false, defaultValue = "") String search,
+                        HttpServletRequest request) {
         PaginationDTO paginationDTO = questionService.list(search, page, size);
         Set<String> hotTags = questionService.getHotTags();
         model.addAttribute("paginationDTO", paginationDTO);
-        model.addAttribute("search",search);
-        model.addAttribute("hotTags",hotTags);
+        model.addAttribute("search", search);
+        model.addAttribute("hotTags", hotTags);
+        request.getSession().setAttribute("loginUrl",loginUrl);
         return "index";
     }
 }

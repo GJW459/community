@@ -43,8 +43,8 @@
                             <li><a href="/logout">退出登录</a></li>
                         </ul>
                     </li>
-                    <li th:if="${session.user == null}"><a
-                            href="https://github.com/login/oauth/authorize?client_id=bedef8cad503139674a5&redirect_uri=http://129.211.64.121:8087/callback&scope=user&state=1">登录</a>
+                    <li th:if="${session.user == null}"><a th:href="${session.loginUrl}"
+                           >登录</a>
                     </li>
                 </ul>
             </div>
