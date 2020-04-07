@@ -37,5 +37,5 @@ spring:
         url-pattern: /druid/*
         login-username: gjw459
         login-password: 123456
-        allow: 127.0.0.1
+#        allow: 127.0.0.1
 loginUrl: https://github.com/login/oauth/authorize?client_id=bedef8cad503139674a5&redirect_uri=http://localhost:8087/callback&scope=user&state=1
