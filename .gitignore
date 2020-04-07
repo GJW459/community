@@ -1,3 +1,6 @@
+*.js linguist-language=java
+*.css linguist-language=java
+*.html linguist-language=java
 HELP.md
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -12,9 +15,6 @@ logs/
 .settings
 .springBeans
 .sts4-cache
-*.js linguist-language=java
-*.css linguist-language=java
-*.html linguist-language=java
 ### IntelliJ IDEA ###
 .idea
 *.iws
